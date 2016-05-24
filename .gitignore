@@ -60,3 +60,9 @@ target/
 
 #Ipython Notebook
 .ipynb_checkpoints
+
+# VIM swap files
+*.swp
+
+# Rope projects
+*.ropeproject
