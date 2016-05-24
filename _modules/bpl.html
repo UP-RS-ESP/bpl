@@ -1,0 +1,513 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>bpl &mdash; Bounded Power Law 1.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Bounded Power Law 1.0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Module code" href="index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Bounded Power Law
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="simple">
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Bounded Power Law</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Module code</a> &raquo;</li>
+      
+    <li>bpl</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for bpl</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Python module to work with bounded power-law (BPL) distributed random variables.</span>
+
+<span class="sd">This module contains a few basic functions that help analyse power-law</span>
+<span class="sd">distributed random variables that can be either bounded only from below or</span>
+<span class="sd">from both above and below. It provides the following functions:</span>
+
+<span class="sd">1.  Generate random samples from power-law distributed random variables.</span>
+<span class="sd">2.  Estimate a logarithimically binned histogram for a power-law</span>
+<span class="sd">    distributed random variable.</span>
+<span class="sd">3.  Estimate the probability density function and the cumulative</span>
+<span class="sd">    distribution function for specified power-law exponent.</span>
+
+<span class="sd">Introduction to BPL</span>
+<span class="sd">-------------------</span>
+
+<span class="sd">The probability density function (PDF) of a power-law variable is at best</span>
+<span class="sd">bounded from below to avoid divergence of the density near zero. In this case,</span>
+<span class="sd">the power-law distribution is defined on the support</span>
+<span class="sd">:math:`(x_{min}, {\\infty})`.Moreover, some real-world systems may have a</span>
+<span class="sd">power-law regime in which case the distribution is bounded from both above and</span>
+<span class="sd">below, and will have the support :math:`(x_{min}, x_{max})`.</span>
+
+<span class="sd">Assuming a continuous random variable distributed according to a power law</span>
+<span class="sd">with exponent :math:`\\alpha &gt; 1`, the PDFs for the two cases above are</span>
+<span class="sd">estimated by following the steps in [1]_, using which the cumulative</span>
+<span class="sd">distribution function (CDF) for the two cases are also easily estimated. The</span>
+<span class="sd">functional forms of the PDFs and the CDFs are given below, and are also</span>
+<span class="sd">implemented in this module as :py:func:`pdf` and :py:func:`cdf`.</span>
+
+<span class="sd">In order to generate random samples for a power-law distributed random</span>
+<span class="sd">variable, this module uses the inverse transform method [2]_ which relies on the</span>
+<span class="sd">inverse function of the CDF of the random variable under consideration. The</span>
+<span class="sd">inverse funcational form of the CDfs of the two power-law distribution types</span>
+<span class="sd">considered here are also listed below. The random sampling routine is</span>
+<span class="sd">implemented in :py:func:`sample`.</span>
+
+<span class="sd">Formulae</span>
+<span class="sd">--------</span>
+<span class="sd">1. Power-law distributed on :math:`(x_{min}, \\infty)`:</span>
+<span class="sd">+++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+
+<span class="sd">    PDF:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        p(x) = - \\frac{\\beta}{x_{min}^{\\beta}} x^{-\\alpha}</span>
+
+<span class="sd">    CDF:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P(x) = - \\frac{x_{min}^{\\beta} - x^{\\beta}}{x_{min}^{\\beta}}</span>
+
+<span class="sd">    Inverse of CDF:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P^{-1}(x) = - x_{min} (1 - x)^{1 / \\beta}</span>
+
+<span class="sd">2. Power-law distributed on :math:`(x_{min}, x_{max})`</span>
+<span class="sd">++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+
+<span class="sd">    PDF:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        p(x) = \\frac{\\beta}{x_{max}^{\\beta} - x_{min}^{\\beta}}x^{-\\alpha}</span>
+
+<span class="sd">    CDF:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P(x) = \\frac{x^{\\beta} - x_{min}^{\\beta}}</span>
+<span class="sd">                     {x_{max}^{\\beta} - x_{min}^{\\beta}}.</span>
+
+<span class="sd">    Inverse of CDF:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P^{-1}(x) &amp;= (a + bx) ^ {1 / (1 - \\alpha},</span>
+
+<span class="sd">        a &amp;= x_{min}^{1 - \\alpha},</span>
+
+<span class="sd">        b &amp;= x_{max}^{1 - \\alpha} - a</span>
+
+<span class="sd">where we have defined :math:`\\beta = 1 - \\alpha` for a more concise notation.</span>
+<span class="sd">Note that the inverse transform method used here recommended by Clauset et al.</span>
+<span class="sd">in Sec. II B of [1]_ in order to generate random samples according the given</span>
+<span class="sd">power-law exponent. Also, note that they provide a separate set of formulae</span>
+<span class="sd">for discrete power-law variables which are not considered here. Thus, care</span>
+<span class="sd">should be taken before extending the results of code implemented in this module</span>
+<span class="sd">to discrete power-law distributed random variables.</span>
+
+
+<span class="sd">References</span>
+<span class="sd">----------</span>
+<span class="sd">.. [1]  Clauset, A., Shalizi, C. R., Newman, M. E. J.</span>
+<span class="sd">        &quot;Power-law Distributions in Empirical Data&quot;.</span>
+<span class="sd">        SFI Working Paper: 2007-12-049 (2007).</span>
+<span class="sd">        http://www.santafe.edu/media/workingpapers/07-12-049.pdf</span>
+
+<span class="sd">.. [2]  &quot;Inverse transform sampling&quot;.</span>
+<span class="sd">        Wikipedia. Accessed on: 23 May, 2016.</span>
+<span class="sd">        https://en.wikipedia.org/wiki/Inverse_transform_sampling</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># Created: Mon May 23, 2016  02:56PM</span>
+<span class="c1"># Last modified: Tue May 24, 2016  09:29PM</span>
+<span class="c1"># Copyright: Bedartha Goswami &lt;goswami@uni-potsdam.de&gt;</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">pl</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="s2">&quot;pdf&quot;</span><span class="p">,</span> <span class="s2">&quot;cdf&quot;</span><span class="p">,</span> <span class="s2">&quot;histogram&quot;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="sample"><a class="viewcode-back" href="../index.html#bpl.sample">[docs]</a><span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">2.5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a random sample from a (bounded) power-law distribution.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    alpha : scalar, float, greater than 1</span>
+<span class="sd">        power-law exponent</span>
+<span class="sd">    size : scalar, integer</span>
+<span class="sd">        size (i.e. length) of the random sample to be generated</span>
+<span class="sd">    xmin : scalar, float</span>
+<span class="sd">        lower bound of the power-law random variable (greater than zero)</span>
+<span class="sd">    xmax : scalar, float, optional</span>
+<span class="sd">        upper bound of the power-law random variable</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    s : numpy.ndarray with ``shape = (size, )``</span>
+<span class="sd">        random deviates from a power-law distribution with exponent ``alpha``</span>
+<span class="sd">        and with upper and lower bounds as specified</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    histogram</span>
+<span class="sd">    pdf</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">alpha</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Power law exponent should be greater than 1!&quot;</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">xmax</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">xmin</span> <span class="o">*</span> <span class="p">((</span><span class="mf">1.</span> <span class="o">-</span> <span class="n">r</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">beta</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">xmin</span> <span class="o">**</span> <span class="n">beta</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">xmax</span> <span class="o">**</span> <span class="n">beta</span> <span class="o">-</span> <span class="n">a</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">r</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="n">beta</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="pdf"><a class="viewcode-back" href="../index.html#bpl.pdf">[docs]</a><span class="k">def</span> <span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the PDF of a (bounded) power-law variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray of 1-dimension</span>
+<span class="sd">        array of values on which the power-law PDF is to be evaluated</span>
+<span class="sd">    alpha : scalar, float, greater than 1</span>
+<span class="sd">        power-law exponent</span>
+<span class="sd">    xmin : scalar, float</span>
+<span class="sd">        lower bound of the power-law random variable (greater than zero)</span>
+<span class="sd">    xmax : scalar, float, optional</span>
+<span class="sd">        upper bound of the power-law random variable</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    pdf : numpy.ndarray with ``shape = (len(x), )``</span>
+<span class="sd">        array of the probability densities evaluated for each point in ``x``.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    pdf</span>
+<span class="sd">    sample</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">alpha</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Power law exponent should be greater than 1!&quot;</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">xmax</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="o">-</span> <span class="n">beta</span> <span class="o">/</span> <span class="n">xmin</span> <span class="o">**</span> <span class="n">beta</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="n">k</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="o">-</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">xmax</span> <span class="o">**</span> <span class="n">beta</span> <span class="o">-</span> <span class="n">xmin</span> <span class="o">**</span> <span class="n">beta</span>
+        <span class="n">pdf</span> <span class="o">=</span> <span class="p">(</span><span class="n">beta</span> <span class="o">/</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="o">-</span><span class="n">alpha</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pdf</span></div>
+
+
+<div class="viewcode-block" id="cdf"><a class="viewcode-back" href="../index.html#bpl.cdf">[docs]</a><span class="k">def</span> <span class="nf">cdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the CDF of a (bounded) power-law variable.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    x : numpy.ndarray of 1-dimension</span>
+<span class="sd">        array of values on which the power-law CDF is to be evaluated</span>
+<span class="sd">    alpha : scalar, float, greater than 1</span>
+<span class="sd">        power-law exponent</span>
+<span class="sd">    xmin : scalar, float</span>
+<span class="sd">        lower bound of the power-law random variable (greater than zero)</span>
+<span class="sd">    xmax : scalar, float, optional</span>
+<span class="sd">        upper bound of the power-law random variable</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    cdf : numpy.ndarray with ``shape = (len(x), )``</span>
+<span class="sd">        array of the cumulative probabilities evaluated for each point in ``x``.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    pdf</span>
+<span class="sd">    sample</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">alpha</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Power law exponent should be greater than 1!&quot;</span>
+    <span class="n">beta</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">-</span> <span class="n">alpha</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">xmax</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">cdf</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">xmin</span><span class="p">)</span> <span class="o">**</span> <span class="n">beta</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">xmax</span> <span class="o">**</span> <span class="n">beta</span> <span class="o">-</span> <span class="n">xmin</span> <span class="o">**</span> <span class="n">beta</span>
+        <span class="n">cdf</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="n">beta</span> <span class="o">-</span> <span class="n">xmin</span> <span class="o">**</span> <span class="n">beta</span><span class="p">)</span> <span class="o">/</span> <span class="n">k</span>
+    <span class="k">return</span> <span class="n">cdf</span></div>
+
+
+<div class="viewcode-block" id="histogram"><a class="viewcode-back" href="../index.html#bpl.histogram">[docs]</a><span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a power law histogram using logarithmic binning.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    arr : numpy.ndarray of 1-dimension</span>
+<span class="sd">        sample of a power-law distributed random deviates</span>
+<span class="sd">    bins : numpy.ndarray of 1-dimension, optional</span>
+<span class="sd">        bins for which the histogram counts are obtained. This should be of</span>
+<span class="sd">        ``shape = (len(arr) + 1, )``. If not provided, an array of</span>
+<span class="sd">        logarithmically spaced bins is estimated using Sturges&#39; formula [3]_.</span>
+<span class="sd">    ax : matplotlib.axes, optional</span>
+<span class="sd">        axes on which the estimated histogram is to be plotted. If not</span>
+<span class="sd">        provided, a standard matplotlib.axes object is created for plotting.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    hist : numpy.ndarray of 1 dimension</span>
+<span class="sd">        array containing the histogram counts/fractions for the given random</span>
+<span class="sd">        sample. This is of length ``n``, where ``n`` is the number of bins</span>
+<span class="sd">        given by Sturges formula.</span>
+<span class="sd">    bins : numpy.ndarray of 1 dimension</span>
+<span class="sd">        array containing the bin edges for the given random sample obtained by</span>
+<span class="sd">        constructing ``n`` number of logarithmically spaced bins.</span>
+<span class="sd">    plot : boolean</span>
+<span class="sd">        If ``True``, the histogram results are plotted on given axes or on a</span>
+<span class="sd">        newly created matplotlib.axes object. Default = False.</span>
+<span class="sd">    ax : matplotlib.axes</span>
+<span class="sd">        axes on which the histogram is plotted</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    The **kwargs** arguments are partly passed on to ``numpy.histogram`` (such</span>
+<span class="sd">    as the ``density`` keyword argument), and to ``matplotlib.pyplot.plot``</span>
+<span class="sd">    (such as the ``mec``, ``mfc``, and ``ms`` keywords), and finally to also</span>
+<span class="sd">    specify axes labels and their fontsizes using ``xlab`` and ``fs`` keyword</span>
+<span class="sd">    arguments. These could also, in principle, be done separately outside of</span>
+<span class="sd">    this function by using the necessary methods of the ``ax`` object.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    pdf</span>
+<span class="sd">    sample</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [3]  Sturges, H. A. (1926).</span>
+<span class="sd">            &quot;The choice of a class interval&quot;.</span>
+<span class="sd">            Journal of the American Statistical Association, 21(153), 65-66.</span>
+<span class="sd">            http://www.tandfonline.com/doi/abs/10.1080/01621459.1926.10502161</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># argument parsing</span>
+    <span class="n">density</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">mec</span><span class="p">,</span> <span class="n">mfc</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;Black&quot;</span><span class="p">,</span> <span class="mi">5</span>
+    <span class="n">xlab</span><span class="p">,</span> <span class="n">fs</span> <span class="o">=</span> <span class="s2">&quot;Observable (Units)&quot;</span><span class="p">,</span> <span class="mi">12</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">exec</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> = kwargs[key]&quot;</span> <span class="o">%</span> <span class="n">key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">bins</span><span class="p">:</span>
+        <span class="n">bins</span> <span class="o">=</span> <span class="n">_logbins</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="c1"># histogram counts</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="n">bins</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="n">density</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="c1"># histogram plot</span>
+    <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+        <span class="c1"># create axes if not given</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ax</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">[</span><span class="mf">8.5</span><span class="p">,</span> <span class="mf">6.5</span><span class="p">])</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="c1"># plot histogram results</span>
+        <span class="n">mid_pts</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">bins</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">bins</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">mid_pts</span><span class="p">,</span> <span class="n">hist</span><span class="p">,</span> <span class="s2">&quot;o&quot;</span><span class="p">,</span>
+                <span class="n">mec</span><span class="o">=</span><span class="n">mec</span><span class="p">,</span> <span class="n">mfc</span><span class="o">=</span><span class="n">mfc</span><span class="p">,</span> <span class="n">ms</span><span class="o">=</span><span class="n">ms</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s2">&quot;log&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">which</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">xlab</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Probability&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+
+    <span class="c1"># return histogram results and axis object for further plotting</span>
+    <span class="k">if</span> <span class="n">plot</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">ax</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hist</span><span class="p">,</span> <span class="n">bins</span></div>
+
+
+<span class="k">def</span> <span class="nf">_logbins</span><span class="p">(</span><span class="n">arr</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an array of logarithmically spaced bins for given array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
+    <span class="n">nbins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">n</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span>         <span class="c1"># Sturges formula</span>
+    <span class="n">arrmin</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="n">arr</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+    <span class="n">arrmax</span> <span class="o">=</span> <span class="n">arr</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">bins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">arrmin</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">arrmax</span><span class="p">),</span>
+                       <span class="n">num</span><span class="o">=</span><span class="n">nbins</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">bins</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Bedartha Goswami.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'1.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

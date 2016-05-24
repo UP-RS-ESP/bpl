@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Bounded Power Law (BPL) &mdash; Bounded Power Law 1.0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="Bounded Power Law 1.0.1 documentation" href="#"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> Bounded Power Law
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="simple">
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">Bounded Power Law</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>Bounded Power Law (BPL)</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bounded-power-law-bpl">
+<h1>Bounded Power Law (BPL)<a class="headerlink" href="#bounded-power-law-bpl" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+<div class="section" id="module-bpl">
+<span id="overview"></span><h1>Overview<a class="headerlink" href="#module-bpl" title="Permalink to this headline">¶</a></h1>
+<p>Python module to work with bounded power-law (BPL) distributed random variables.</p>
+<p>This module contains a few basic functions that help analyse power-law
+distributed random variables that can be either bounded only from below or
+from both above and below. It provides the following functions:</p>
+<ol class="arabic simple">
+<li>Generate random samples from power-law distributed random variables.</li>
+<li>Estimate a logarithimically binned histogram for a power-law
+distributed random variable.</li>
+<li>Estimate the probability density function and the cumulative
+distribution function for specified power-law exponent.</li>
+</ol>
+<div class="section" id="introduction-to-bpl">
+<h2>Introduction to BPL<a class="headerlink" href="#introduction-to-bpl" title="Permalink to this headline">¶</a></h2>
+<p>The probability density function (PDF) of a power-law variable is at best
+bounded from below to avoid divergence of the density near zero. In this case,
+the power-law distribution is defined on the support
+<span class="math">\((x_{min}, {\infty})\)</span>.Moreover, some real-world systems may have a
+power-law regime in which case the distribution is bounded from both above and
+below, and will have the support <span class="math">\((x_{min}, x_{max})\)</span>.</p>
+<p>Assuming a continuous random variable distributed according to a power law
+with exponent <span class="math">\(\alpha &gt; 1\)</span>, the PDFs for the two cases above are
+estimated by following the steps in <a class="footnote-reference" href="#id5" id="id1">[1]</a>, using which the cumulative
+distribution function (CDF) for the two cases are also easily estimated. The
+functional forms of the PDFs and the CDFs are given below, and are also
+implemented in this module as <a class="reference internal" href="#bpl.pdf" title="bpl.pdf"><code class="xref py py-func docutils literal"><span class="pre">pdf()</span></code></a> and <a class="reference internal" href="#bpl.cdf" title="bpl.cdf"><code class="xref py py-func docutils literal"><span class="pre">cdf()</span></code></a>.</p>
+<p>In order to generate random samples for a power-law distributed random
+variable, this module uses the inverse transform method <a class="footnote-reference" href="#id6" id="id2">[2]</a> which relies on the
+inverse function of the CDF of the random variable under consideration. The
+inverse funcational form of the CDfs of the two power-law distribution types
+considered here are also listed below. The random sampling routine is
+implemented in <a class="reference internal" href="#bpl.sample" title="bpl.sample"><code class="xref py py-func docutils literal"><span class="pre">sample()</span></code></a>.</p>
+</div>
+<div class="section" id="formulae">
+<h2>Formulae<a class="headerlink" href="#formulae" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="power-law-distributed-on">
+<h3>1. Power-law distributed on <span class="math">\((x_{min}, \infty)\)</span>:<a class="headerlink" href="#power-law-distributed-on" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>PDF:</p>
+<div class="math">
+\[p(x) = - \frac{\beta}{x_{min}^{\beta}} x^{-\alpha}\]</div>
+<p>CDF:</p>
+<div class="math">
+\[P(x) = - \frac{x_{min}^{\beta} - x^{\beta}}{x_{min}^{\beta}}\]</div>
+<p>Inverse of CDF:</p>
+<div class="math">
+\[P^{-1}(x) = - x_{min} (1 - x)^{1 / \beta}\]</div>
+</div></blockquote>
+</div>
+<div class="section" id="id3">
+<h3>2. Power-law distributed on <span class="math">\((x_{min}, x_{max})\)</span><a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><p>PDF:</p>
+<div class="math">
+\[p(x) = \frac{\beta}{x_{max}^{\beta} - x_{min}^{\beta}}x^{-\alpha}\]</div>
+<p>CDF:</p>
+<div class="math">
+\[P(x) = \frac{x^{\beta} - x_{min}^{\beta}}
+             {x_{max}^{\beta} - x_{min}^{\beta}}.\]</div>
+<p>Inverse of CDF:</p>
+<div class="math">
+\[ \begin{align}\begin{aligned}P^{-1}(x) &amp;= (a + bx) ^ {1 / (1 - \alpha},\\a &amp;= x_{min}^{1 - \alpha},\\b &amp;= x_{max}^{1 - \alpha} - a\end{aligned}\end{align} \]</div>
+</div></blockquote>
+<p>where we have defined <span class="math">\(\beta = 1 - \alpha\)</span> for a more concise notation.
+Note that the inverse transform method used here recommended by Clauset et al.
+in Sec. II B of <a class="footnote-reference" href="#id5" id="id4">[1]</a> in order to generate random samples according the given
+power-law exponent. Also, note that they provide a separate set of formulae
+for discrete power-law variables which are not considered here. Thus, care
+should be taken before extending the results of code implemented in this module
+to discrete power-law distributed random variables.</p>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id5" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td><em>(<a class="fn-backref" href="#id1">1</a>, <a class="fn-backref" href="#id4">2</a>)</em> Clauset, A., Shalizi, C. R., Newman, M. E. J.
+&#8220;Power-law Distributions in Empirical Data&#8221;.
+SFI Working Paper: 2007-12-049 (2007).
+<a class="reference external" href="http://www.santafe.edu/media/workingpapers/07-12-049.pdf">http://www.santafe.edu/media/workingpapers/07-12-049.pdf</a></td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="id6" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td>&#8220;Inverse transform sampling&#8221;.
+Wikipedia. Accessed on: 23 May, 2016.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Inverse_transform_sampling">https://en.wikipedia.org/wiki/Inverse_transform_sampling</a></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="functions">
+<h1>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="bpl.pdf">
+<code class="descclassname">bpl.</code><code class="descname">pdf</code><span class="sig-paren">(</span><em>x</em>, <em>alpha</em>, <em>xmin</em>, <em>xmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bpl.html#pdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bpl.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the PDF of a (bounded) power-law variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy.ndarray of 1-dimension</em>) &#8211; array of values on which the power-law PDF is to be evaluated</li>
+<li><strong>alpha</strong> (<em>scalar, float, greater than 1</em>) &#8211; power-law exponent</li>
+<li><strong>xmin</strong> (<em>scalar, float</em>) &#8211; lower bound of the power-law random variable (greater than zero)</li>
+<li><strong>xmax</strong> (<em>scalar, float, optional</em>) &#8211; upper bound of the power-law random variable</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>pdf</strong> &#8211; array of the probability densities evaluated for each point in <code class="docutils literal"><span class="pre">x</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray with <code class="docutils literal"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(len(x),</span> <span class="pre">)</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#bpl.pdf" title="bpl.pdf"><code class="xref py py-func docutils literal"><span class="pre">pdf()</span></code></a>, <a class="reference internal" href="#bpl.sample" title="bpl.sample"><code class="xref py py-func docutils literal"><span class="pre">sample()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="bpl.cdf">
+<code class="descclassname">bpl.</code><code class="descname">cdf</code><span class="sig-paren">(</span><em>x</em>, <em>alpha</em>, <em>xmin</em>, <em>xmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bpl.html#cdf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bpl.cdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the CDF of a (bounded) power-law variable.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> (<em>numpy.ndarray of 1-dimension</em>) &#8211; array of values on which the power-law CDF is to be evaluated</li>
+<li><strong>alpha</strong> (<em>scalar, float, greater than 1</em>) &#8211; power-law exponent</li>
+<li><strong>xmin</strong> (<em>scalar, float</em>) &#8211; lower bound of the power-law random variable (greater than zero)</li>
+<li><strong>xmax</strong> (<em>scalar, float, optional</em>) &#8211; upper bound of the power-law random variable</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>cdf</strong> &#8211; array of the cumulative probabilities evaluated for each point in <code class="docutils literal"><span class="pre">x</span></code>.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray with <code class="docutils literal"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(len(x),</span> <span class="pre">)</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#bpl.pdf" title="bpl.pdf"><code class="xref py py-func docutils literal"><span class="pre">pdf()</span></code></a>, <a class="reference internal" href="#bpl.sample" title="bpl.sample"><code class="xref py py-func docutils literal"><span class="pre">sample()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="bpl.sample">
+<code class="descclassname">bpl.</code><code class="descname">sample</code><span class="sig-paren">(</span><em>alpha=2.5</em>, <em>size=1000</em>, <em>xmin=1</em>, <em>xmax=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bpl.html#sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bpl.sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a random sample from a (bounded) power-law distribution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>alpha</strong> (<em>scalar, float, greater than 1</em>) &#8211; power-law exponent</li>
+<li><strong>size</strong> (<em>scalar, integer</em>) &#8211; size (i.e. length) of the random sample to be generated</li>
+<li><strong>xmin</strong> (<em>scalar, float</em>) &#8211; lower bound of the power-law random variable (greater than zero)</li>
+<li><strong>xmax</strong> (<em>scalar, float, optional</em>) &#8211; upper bound of the power-law random variable</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>s</strong> &#8211; random deviates from a power-law distribution with exponent <code class="docutils literal"><span class="pre">alpha</span></code>
+and with upper and lower bounds as specified</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.ndarray with <code class="docutils literal"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(size,</span> <span class="pre">)</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#bpl.histogram" title="bpl.histogram"><code class="xref py py-func docutils literal"><span class="pre">histogram()</span></code></a>, <a class="reference internal" href="#bpl.pdf" title="bpl.pdf"><code class="xref py py-func docutils literal"><span class="pre">pdf()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="bpl.histogram">
+<code class="descclassname">bpl.</code><code class="descname">histogram</code><span class="sig-paren">(</span><em>arr</em>, <em>bins=None</em>, <em>plot=False</em>, <em>ax=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bpl.html#histogram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bpl.histogram" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots a power law histogram using logarithmic binning.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>arr</strong> (<em>numpy.ndarray of 1-dimension</em>) &#8211; sample of a power-law distributed random deviates</li>
+<li><strong>bins</strong> (<em>numpy.ndarray of 1-dimension, optional</em>) &#8211; bins for which the histogram counts are obtained. This should be of
+<code class="docutils literal"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(len(arr)</span> <span class="pre">+</span> <span class="pre">1,</span> <span class="pre">)</span></code>. If not provided, an array of
+logarithmically spaced bins is estimated using Sturges&#8217; formula <a class="footnote-reference" href="#id8" id="id7">[3]</a>.</li>
+<li><strong>ax</strong> (<em>matplotlib.axes, optional</em>) &#8211; axes on which the estimated histogram is to be plotted. If not
+provided, a standard matplotlib.axes object is created for plotting.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
+<li><strong>hist</strong> (<em>numpy.ndarray of 1 dimension</em>) &#8211; array containing the histogram counts/fractions for the given random
+sample. This is of length <code class="docutils literal"><span class="pre">n</span></code>, where <code class="docutils literal"><span class="pre">n</span></code> is the number of bins
+given by Sturges formula.</li>
+<li><strong>bins</strong> (<em>numpy.ndarray of 1 dimension</em>) &#8211; array containing the bin edges for the given random sample obtained by
+constructing <code class="docutils literal"><span class="pre">n</span></code> number of logarithmically spaced bins.</li>
+<li><strong>plot</strong> (<em>boolean</em>) &#8211; If <code class="docutils literal"><span class="pre">True</span></code>, the histogram results are plotted on given axes or on a
+newly created matplotlib.axes object. Default = False.</li>
+<li><strong>ax</strong> (<em>matplotlib.axes</em>) &#8211; axes on which the histogram is plotted</li>
+</ul>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>The <strong>kwargs</strong> arguments are partly passed on to <code class="docutils literal"><span class="pre">numpy.histogram</span></code> (such
+as the <code class="docutils literal"><span class="pre">density</span></code> keyword argument), and to <code class="docutils literal"><span class="pre">matplotlib.pyplot.plot</span></code>
+(such as the <code class="docutils literal"><span class="pre">mec</span></code>, <code class="docutils literal"><span class="pre">mfc</span></code>, and <code class="docutils literal"><span class="pre">ms</span></code> keywords), and finally to also
+specify axes labels and their fontsizes using <code class="docutils literal"><span class="pre">xlab</span></code> and <code class="docutils literal"><span class="pre">fs</span></code> keyword
+arguments. These could also, in principle, be done separately outside of
+this function by using the necessary methods of the <code class="docutils literal"><span class="pre">ax</span></code> object.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#bpl.pdf" title="bpl.pdf"><code class="xref py py-func docutils literal"><span class="pre">pdf()</span></code></a>, <a class="reference internal" href="#bpl.sample" title="bpl.sample"><code class="xref py py-func docutils literal"><span class="pre">sample()</span></code></a></p>
+</div>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id8" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id7">[3]</a></td><td>Sturges, H. A. (1926).
+&#8220;The choice of a class interval&#8221;.
+Journal of the American Statistical Association, 21(153), 65-66.
+<a class="reference external" href="http://www.tandfonline.com/doi/abs/10.1080/01621459.1926.10502161">http://www.tandfonline.com/doi/abs/10.1080/01621459.1926.10502161</a></td></tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Bedartha Goswami.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
