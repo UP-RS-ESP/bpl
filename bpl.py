@@ -100,7 +100,7 @@ References
 
 """
 # Created: Mon May 23, 2016  02:56PM
-# Last modified: Tue May 24, 2016  11:48PM
+# Last modified: Tue May 24, 2016  11:50PM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
@@ -237,10 +237,10 @@ def histogram(arr, bins=None, plot=False, ax=None, **kwargs):
         logarithmically spaced bins is estimated using Sturges' formula [3]_.
     plot : boolean
         If ``True``, the histogram results are plotted on given axes or on a
-        newly created matplotlib.axes object. Default ``= False``.
+        newly created ``matplotlib.axes`` object. Default ``= False``.
     ax : matplotlib.axes, optional
         axes on which the estimated histogram is to be plotted. If not
-        provided, a standard matplotlib.axes object is created for plotting.
+        provided, a standard ``matplotlib.axes`` object is created for plotting.
 
     Returns
     -------
