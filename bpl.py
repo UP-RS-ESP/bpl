@@ -100,7 +100,7 @@ References
 
 """
 # Created: Mon May 23, 2016  02:56PM
-# Last modified: Tue May 24, 2016  09:29PM
+# Last modified: Tue May 24, 2016  11:48PM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
@@ -171,7 +171,7 @@ def pdf(x, alpha, xmin, xmax=None):
 
     See Also
     --------
-    pdf
+    cdf
     sample
 
     """
@@ -235,6 +235,9 @@ def histogram(arr, bins=None, plot=False, ax=None, **kwargs):
         bins for which the histogram counts are obtained. This should be of
         ``shape = (len(arr) + 1, )``. If not provided, an array of
         logarithmically spaced bins is estimated using Sturges' formula [3]_.
+    plot : boolean
+        If ``True``, the histogram results are plotted on given axes or on a
+        newly created matplotlib.axes object. Default ``= False``.
     ax : matplotlib.axes, optional
         axes on which the estimated histogram is to be plotted. If not
         provided, a standard matplotlib.axes object is created for plotting.
@@ -248,9 +251,6 @@ def histogram(arr, bins=None, plot=False, ax=None, **kwargs):
     bins : numpy.ndarray of 1 dimension
         array containing the bin edges for the given random sample obtained by
         constructing ``n`` number of logarithmically spaced bins.
-    plot : boolean
-        If ``True``, the histogram results are plotted on given axes or on a
-        newly created matplotlib.axes object. Default = False.
     ax : matplotlib.axes
         axes on which the histogram is plotted
 
