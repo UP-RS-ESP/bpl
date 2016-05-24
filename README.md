@@ -16,6 +16,15 @@ from both above and below. It provides the following functions:
 Simply clone this repository and copy ``bpl.py`` in the directory where you are
 working in.
 
+# Documentation
+
+An overview of the functions and its usage can be found at:
+http://up-rs-esp.github.io/bpl
+
+# Examples
+
+An example script ``example.py`` is included in the repository. 
+
 # License
 
 Copyright (c) 2016 Bedartha Goswami
@@ -40,7 +49,8 @@ Bedartha Goswami <goswami@uni-potsdam.de>
 # About this file
 
 Created: Tue May 24, 2016  09:42PM
-Last modified: Tue May 24, 2016  09:47PM
+
+Last modified: Tue May 24, 2016  11:33PM
 
 
 
