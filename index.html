@@ -251,7 +251,7 @@ Wikipedia. Accessed on: 23 May, 2016.
 </table>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="#bpl.pdf" title="bpl.pdf"><code class="xref py py-func docutils literal"><span class="pre">pdf()</span></code></a>, <a class="reference internal" href="#bpl.sample" title="bpl.sample"><code class="xref py py-func docutils literal"><span class="pre">sample()</span></code></a></p>
+<p class="last"><a class="reference internal" href="#bpl.cdf" title="bpl.cdf"><code class="xref py py-func docutils literal"><span class="pre">cdf()</span></code></a>, <a class="reference internal" href="#bpl.sample" title="bpl.sample"><code class="xref py py-func docutils literal"><span class="pre">sample()</span></code></a></p>
 </div>
 </dd></dl>
 
@@ -329,8 +329,10 @@ and with upper and lower bounds as specified</p>
 <li><strong>bins</strong> (<em>numpy.ndarray of 1-dimension, optional</em>) &#8211; bins for which the histogram counts are obtained. This should be of
 <code class="docutils literal"><span class="pre">shape</span> <span class="pre">=</span> <span class="pre">(len(arr)</span> <span class="pre">+</span> <span class="pre">1,</span> <span class="pre">)</span></code>. If not provided, an array of
 logarithmically spaced bins is estimated using Sturges&#8217; formula <a class="footnote-reference" href="#id8" id="id7">[3]</a>.</li>
+<li><strong>plot</strong> (<em>boolean</em>) &#8211; If <code class="docutils literal"><span class="pre">True</span></code>, the histogram results are plotted on given axes or on a
+newly created <code class="docutils literal"><span class="pre">matplotlib.axes</span></code> object. Default <code class="docutils literal"><span class="pre">=</span> <span class="pre">False</span></code>.</li>
 <li><strong>ax</strong> (<em>matplotlib.axes, optional</em>) &#8211; axes on which the estimated histogram is to be plotted. If not
-provided, a standard matplotlib.axes object is created for plotting.</li>
+provided, a standard <code class="docutils literal"><span class="pre">matplotlib.axes</span></code> object is created for plotting.</li>
 </ul>
 </td>
 </tr>
@@ -340,8 +342,6 @@ sample. This is of length <code class="docutils literal"><span class="pre">n</sp
 given by Sturges formula.</li>
 <li><strong>bins</strong> (<em>numpy.ndarray of 1 dimension</em>) &#8211; array containing the bin edges for the given random sample obtained by
 constructing <code class="docutils literal"><span class="pre">n</span></code> number of logarithmically spaced bins.</li>
-<li><strong>plot</strong> (<em>boolean</em>) &#8211; If <code class="docutils literal"><span class="pre">True</span></code>, the histogram results are plotted on given axes or on a
-newly created matplotlib.axes object. Default = False.</li>
 <li><strong>ax</strong> (<em>matplotlib.axes</em>) &#8211; axes on which the histogram is plotted</li>
 </ul>
 </p>

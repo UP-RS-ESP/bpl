@@ -228,7 +228,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="c1"># Created: Mon May 23, 2016  02:56PM</span>
-<span class="c1"># Last modified: Tue May 24, 2016  09:29PM</span>
+<span class="c1"># Last modified: Tue May 24, 2016  11:50PM</span>
 <span class="c1"># Copyright: Bedartha Goswami &lt;goswami@uni-potsdam.de&gt;</span>
 
 
@@ -299,7 +299,7 @@
 
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
-<span class="sd">    pdf</span>
+<span class="sd">    cdf</span>
 <span class="sd">    sample</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -363,9 +363,12 @@
 <span class="sd">        bins for which the histogram counts are obtained. This should be of</span>
 <span class="sd">        ``shape = (len(arr) + 1, )``. If not provided, an array of</span>
 <span class="sd">        logarithmically spaced bins is estimated using Sturges&#39; formula [3]_.</span>
+<span class="sd">    plot : boolean</span>
+<span class="sd">        If ``True``, the histogram results are plotted on given axes or on a</span>
+<span class="sd">        newly created ``matplotlib.axes`` object. Default ``= False``.</span>
 <span class="sd">    ax : matplotlib.axes, optional</span>
 <span class="sd">        axes on which the estimated histogram is to be plotted. If not</span>
-<span class="sd">        provided, a standard matplotlib.axes object is created for plotting.</span>
+<span class="sd">        provided, a standard ``matplotlib.axes`` object is created for plotting.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -376,9 +379,6 @@
 <span class="sd">    bins : numpy.ndarray of 1 dimension</span>
 <span class="sd">        array containing the bin edges for the given random sample obtained by</span>
 <span class="sd">        constructing ``n`` number of logarithmically spaced bins.</span>
-<span class="sd">    plot : boolean</span>
-<span class="sd">        If ``True``, the histogram results are plotted on given axes or on a</span>
-<span class="sd">        newly created matplotlib.axes object. Default = False.</span>
 <span class="sd">    ax : matplotlib.axes</span>
 <span class="sd">        axes on which the histogram is plotted</span>
 
