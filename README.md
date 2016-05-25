@@ -13,8 +13,20 @@ from both above and below. It provides the following functions:
 
 # Installation
 
-Simply clone this repository and copy ``bpl.py`` in the directory where you are
+1. Simply clone this repository and copy ``bpl.py`` in the directory where you are
 working in.
+
+2. Alternatively, you can clone this repository to a desired directory of your
+choice and then create and Python startup file ``.pythonstartup`` in your 
+home directory as:
+```python
+import sys
+import os
+home = os.path.expanduser("~")
+sys.path.append(home + "/<path_to_package>")
+```
+Save the file, and that's it! From then on, all python shells should be able to
+detect (and import) the ``bpl`` package without any problem.
 
 # Documentation
 
@@ -50,7 +62,7 @@ Bedartha Goswami <goswami@uni-potsdam.de>
 
 Created: Tue May 24, 2016  09:42PM
 
-Last modified: Tue May 24, 2016  11:33PM
+Last modified: Wed May 25, 2016  10:16PM
 
 
 
