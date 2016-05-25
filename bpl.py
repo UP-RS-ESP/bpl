@@ -72,11 +72,11 @@ Formulae
     Inverse of CDF:
 
     .. math::
-        P^{-1}(x) &= (a + bx) ^ {1 / (1 - \\alpha},
+        P^{-1}(x) &= (a + bx) ^ {1 / \\beta},
 
-        a &= x_{min}^{1 - \\alpha},
+        a &= x_{min}^{\\beta},
 
-        b &= x_{max}^{1 - \\alpha} - a
+        b &= x_{max}^{\\beta} - a
 
 where we have defined :math:`\\beta = 1 - \\alpha` for a more concise notation.
 Note that the inverse transform method used here recommended by Clauset et al.
@@ -100,7 +100,7 @@ References
 
 """
 # Created: Mon May 23, 2016  02:56PM
-# Last modified: Tue May 24, 2016  11:50PM
+# Last modified: Wed May 25, 2016  11:36AM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
