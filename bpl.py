@@ -72,9 +72,9 @@ Formulae
     Inverse of CDF:
 
     .. math::
-        P^{-1}(x) &= (a + bx) ^ {1 / \\beta},
+        P^{-1}(x) &= (a + bx) ^ {1 / \\beta}
 
-        a &= x_{min}^{\\beta},
+        a &= x_{min}^{\\beta}
 
         b &= x_{max}^{\\beta} - a
 
@@ -100,7 +100,7 @@ References
 
 """
 # Created: Mon May 23, 2016  02:56PM
-# Last modified: Wed May 25, 2016  11:36AM
+# Last modified: Wed May 25, 2016  11:41AM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
