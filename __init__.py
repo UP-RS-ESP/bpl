@@ -21,7 +21,7 @@ http://up-rs-esp.github.io/bpl
 
 """
 # Created: Wed May 25, 2016  10:09PM
-# Last modified: Wed May 25, 2016  10:10PM
+# Last modified: Wed May 25, 2016  10:23PM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
@@ -45,3 +45,5 @@ __version__ = 1.0
 
 __date__ = "2016-05-25"
 """The release date of this version."""
+
+from bpl import *
