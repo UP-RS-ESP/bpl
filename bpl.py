@@ -100,7 +100,7 @@ References
 
 """
 # Created: Mon May 23, 2016  02:56PM
-# Last modified: Wed May 25, 2016  11:41AM
+# Last modified: Wed May 25, 2016  10:29PM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
@@ -138,6 +138,7 @@ def sample(alpha=2.5, size=1000, xmin=1, xmax=None):
 
     """
     assert alpha > 1, "Power law exponent should be greater than 1!"
+    size = int(size)
     beta = 1. - alpha
     r = np.random.rand(size)
     if not xmax:
