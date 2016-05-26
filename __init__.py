@@ -21,7 +21,7 @@ http://up-rs-esp.github.io/bpl
 
 """
 # Created: Wed May 25, 2016  10:09PM
-# Last modified: Wed May 25, 2016  10:23PM
+# Last modified: Thu May 26, 2016  09:22PM
 # Copyright: Bedartha Goswami <goswami@uni-potsdam.de>
 
 
@@ -29,7 +29,7 @@ __name__ = "bpl"
 """The project name."""
 
 __author__ = "Bedartha Goswami <goswami@uni-potsdam.de>"
-"""The primary author of pygeonetwork."""
+"""The primary author."""
 
 __copyright__ = "Copyright (c) 2016 Bedartha Goswami."
 """The copyright holder of this package 'bpl'."""
@@ -45,5 +45,3 @@ __version__ = 1.0
 
 __date__ = "2016-05-25"
 """The release date of this version."""
-
-from bpl import *
